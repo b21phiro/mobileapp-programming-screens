@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String EXTRA_MESSAGE = "com.example.screens";
+    public static final String EXTRA_MESSAGE = "com.example.screens";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
