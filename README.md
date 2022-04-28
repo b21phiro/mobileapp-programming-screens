@@ -1,42 +1,79 @@
 
+
 # Rapport
 
-**Skriv din rapport här!**
+Skapade en icke-fungerande sökmotor, som endast tar emot input och visar bokstavligen ordet man
+söker efter.
 
-_Du kan ta bort all text som finns sedan tidigare_.
-
-## Följande grundsyn gäller dugga-svar:
-
-- Ett kortfattat svar är att föredra. Svar som är längre än en sida text (skärmdumpar och programkod exkluderat) är onödigt långt.
-- Svaret skall ha minst en snutt programkod.
-- Svaret skall inkludera en kort övergripande förklarande text som redogör för vad respektive snutt programkod gör eller som svarar på annan teorifråga.
-- Svaret skall ha minst en skärmdump. Skärmdumpar skall illustrera exekvering av relevant programkod. Eventuell text i skärmdumpar måste vara läsbar.
-- I de fall detta efterfrågas, dela upp delar av ditt svar i för- och nackdelar. Dina för- respektive nackdelar skall vara i form av punktlistor med kortare stycken (3-4 meningar).
-
-Programkod ska se ut som exemplet nedan. Koden måste vara korrekt indenterad då den blir lättare att läsa vilket gör det lättare att hitta syntaktiska fel.
+## SearchActivity
 
 ```
-function errorCallback(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            // Geolocation API stöds inte, gör något
-            break;
-        case error.POSITION_UNAVAILABLE:
-            // Misslyckat positionsanrop, gör något
-            break;
-        case error.UNKNOWN_ERROR:
-            // Okänt fel, gör något
-            break;
+package com.example.screens;
+
+...imports
+ 
+public class SearchActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+        Intent intent = getIntent();
+        String input = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        TextView searchKey = findViewById(R.id.searchKey);
+        searchKey.setText("Results for \""+input+"\"");
     }
 }
 ```
 
-Bilder läggs i samma mapp som markdown-filen.
+Denna aktivitet befinner sig hos "..\app\src\main\java\com.example.screens\SearchActivity.java"
+tillsammans med MainActivity. Jag utnyttjar endast onCreate livs-cykel-stadiet genom att initiera
+exempelvis layouten för denna aktivitet ("activity_search"). Det enda den gör utöver detta är att
+visa given input-sträng, som kommer ifrån intent (MainActivity).
 
-![](android.png)
+## MainActivity
 
-Läs gärna:
+```
+package com.example.screens;
 
-- Boulos, M.N.K., Warren, J., Gong, J. & Yue, P. (2010) Web GIS in practice VIII: HTML5 and the canvas element for interactive online mapping. International journal of health geographics 9, 14. Shin, Y. &
-- Wunsche, B.C. (2013) A smartphone-based golf simulation exercise game for supporting arthritis patients. 2013 28th International Conference of Image and Vision Computing New Zealand (IVCNZ), IEEE, pp. 459–464.
-- Wohlin, C., Runeson, P., Höst, M., Ohlsson, M.C., Regnell, B., Wesslén, A. (2012) Experimentation in Software Engineering, Berlin, Heidelberg: Springer Berlin Heidelberg.
+...imports
+
+public class MainActivity extends AppCompatActivity {
+
+    public static final String EXTRA_MESSAGE = "com.example.screens";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Button submitButton = (Button) findViewById(R.id.submitButton);
+        EditText searchInput = (EditText) findViewById(R.id.searchInput);
+
+        submitButton.setOnClickListener(view -> {
+            String input = (String) searchInput.getText().toString();
+            submitSearchInput(input);
+        });
+
+    }
+
+    public void submitSearchInput(String input) {
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, input);
+        startActivity(intent);
+    }
+
+}
+```
+
+Här instanserar jag objekten som binder sig med skrivfältet (searchInput) samt submit-knappen
+(submitButton). Med hjälp av en "setOnClickListener" skickas värdet hos searchInput
+(konverteras till en sträng) till metoden submitSearch, som tar emot en parameter (input).
+View är den aktivitet-xml-layout vi vill visa, och input är en sträng (sökvärdet från textfältet).
+
+Sedan instanser vi objektet intent ur intent, som tar MainActivity klassen som parameter samt den
+aktivitet vill vill åt (SearchActivity.java). För att skicka datan vidare till denna aktivitet
+använder vi oss av metoden "putExtra" från klassen Intent. Sedan startas nästa aktivitet.
+
+![bild1.jpg](bild1.jpg)
+
+![bild2.jpg](bild2.jpg)d
